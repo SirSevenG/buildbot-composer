@@ -4,7 +4,7 @@
 # Based on official buildbot container image, uses local master.cfg instead of downloading it
 # Build env variables are set in .env file: UX_BUILDMASTER UX_BUILDMASTER_PORT UX_WORKERNAME UX_WORKERPASS
 
-FROM        buildbot:buildbot-master
+FROM        buildbot/buildbot-master
 MAINTAINER  SirSevenG
 
 COPY docker/ /var/lib/buildbot

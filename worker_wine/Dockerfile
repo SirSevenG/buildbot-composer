@@ -1,11 +1,14 @@
 # buildbot-worker for nspv windows tests
 
 # Provides a base Ubuntu (18.04) image with latest buildbot worker installed
+# Based on official buildbot/buildbot-worker Dockerfile
 # Installs basic deps to compile libnspv and run python tests for windows(uner wine64)
 # Build env variables are set in .env file: WN_BUILDMASTER WN_BUILDMASTER_PORT WN_WORKERNAME WN_WORKERPASS
 
-FROM        buildbot:buildbot-worker
+FROM        ubuntu:bionic
 MAINTAINER  SirSevenG
+
+ARG         DEBIAN_FRONTEND=noninteractive
 
 # Install libnspv deps
 RUN         apt-get update && \
@@ -19,7 +22,12 @@ RUN         apt-get update && \
             libtool \
             ncurses-dev \
             unzip \
-            python \
+            git \
+            libffi-dev \
+            libssl-dev \
+            python3-setuptools \
+            python3-pip \
+            subversion \
             python-zmq \
             zlib1g-dev \
             wget \
@@ -36,7 +44,13 @@ RUN         apt-get update && \
             libsodium-dev \
             python3-dev \
             python3-pip \
-            libgnutls28-dev
+            libgnutls28-dev && \
+            rm -rf /var/lib/apt/lists/* && \
+            pip3 install --upgrade pip  && \
+            # Install required python packages, and twisted
+            pip --no-cache-dir install 'twisted[tls]' && \
+            mkdir /buildbot && \
+            useradd -ms /bin/bash buildbot
 
 # Install wine and deps to run win app
 RUN         dpkg --add-architecture i386 && \
@@ -50,6 +64,13 @@ RUN         dpkg --add-architecture i386 && \
             mono-complete &&\
             wget -q http://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi && \
             wine msiexec /i wine_gecko-2.47-x86_64.msi
+
+# Download buidbot-worker folder from official repo
+RUN         svn checkout https://github.com/buildbot/buildbot/trunk/worker /usr/src/buildbot-worker
+COPY        docker/buildbot.tac /buildbot/buildbot.tac
+
+RUN         pip3 install /usr/src/buildbot-worker && \
+            chown -R buildbot /buildbot
 
 USER buildbot
 WORKDIR /buildbot
