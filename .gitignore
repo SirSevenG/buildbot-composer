@@ -5,3 +5,9 @@
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+master/docker/secrets
+master/docker/secrets/admin_name
+master/docker/secrets/admin_pwd
+master/docker/secrets/pwd
+master/docker/secrets/url
+master/docker/secrets/user
