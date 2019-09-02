@@ -8,6 +8,7 @@ FROM        buildbot/buildbot-master
 MAINTAINER  SirSevenG
 
 COPY docker/ /var/lib/buildbot
+RUN chmod 700 -R /var/lib/buildbot/secrets
 
 WORKDIR /var/lib/buildbot
 CMD ["dumb-init", "/usr/src/buildbot/docker/start_buildbot.sh"]
