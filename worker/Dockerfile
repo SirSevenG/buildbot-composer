@@ -47,6 +47,8 @@ RUN         apt-get update && \
             libgnutls28-dev && \
             rm -rf /var/lib/apt/lists/* && \
             pip3 install --upgrade pip && \
+            curl https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64.deb -Lo /tmp/init.deb && \
+            dpkg -i /tmp/init.deb && \
             # Install required python packages, and twisted
             pip --no-cache-dir install 'twisted[tls]' && \
             mkdir /buildbot && \
