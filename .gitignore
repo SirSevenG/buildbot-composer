@@ -11,3 +11,5 @@ master/docker/secrets/admin_pwd
 master/docker/secrets/pwd
 master/docker/secrets/url
 master/docker/secrets/user
+docker-compose.yml
+example.env

@@ -1,0 +1,42 @@
+version: '3'
+
+volumes:
+    db:
+        driver: ${PGSQL_DRIVER}
+    buildbot:
+        driver: ${VOLUMES_DRIVER}
+    worker:
+        driver: ${VOLUMES_DRIVER}
+
+services:
+
+  db:
+    image: "postgres:9.4"
+    expose:
+        - 5432
+
+  buildbot:
+    build: ./master
+    links:
+        - db
+    expose:
+        - 8080
+        - 9989
+    ports:
+      - 8010:8080
+    depends_on:
+        - db
+
+  worker:
+    build: ./worker
+    links:
+        - buildbot
+    depends_on:
+        - buildbot
+
+  worker_win:
+    build: ./worker_wine
+    links:
+        - buildbot
+    depends_on:
+        - buildbot
