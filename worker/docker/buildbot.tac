@@ -22,7 +22,7 @@ workername = os.environ.get("UX_WORKERNAME")
 passwd = os.environ.get("UX_WORKERPASS")
 
 # delete the password from the environ so that it is not leaked in the log
-blacklist = os.environ.get("WORKER_ENVIRONMENT_BLACKLIST", "WORKERPASS").split()
+blacklist = os.environ.get("WORKER_ENVIRONMENT_BLACKLIST", "UX_WORKERPASS").split()
 for name in list(os.environ.keys()):
     for toremove in blacklist:
         if fnmatch.fnmatch(name, toremove):
