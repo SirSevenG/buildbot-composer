@@ -16,13 +16,13 @@ application = service.Application('buildbot-worker')
 
 application.setComponent(ILogObserver, FileLogObserver(sys.stdout).emit)
 # and worker on the same process!
-buildmaster_host = os.environ.get("WN_BUILDMASTER")
-port = int(os.environ.get("WN_BUILDMASTER_PORT"))
-workername = os.environ.get("WN_WORKERNAME")
-passwd = os.environ.get("WN_WORKERPASS")
+buildmaster_host = os.environ.get("BUILDMASTER")
+port = int(os.environ.get("BUILDMASTER_PORT"))
+workername = os.environ.get("WORKERNAME")
+passwd = os.environ.get("WORKERPASS")
 
 # delete the password from the environ so that it is not leaked in the log
-blacklist = os.environ.get("WORKER_ENVIRONMENT_BLACKLIST", "WN_WORKERPASS").split()
+blacklist = os.environ.get("WORKER_ENVIRONMENT_BLACKLIST", "WORKERPASS").split()
 for name in list(os.environ.keys()):
     for toremove in blacklist:
         if fnmatch.fnmatch(name, toremove):

@@ -31,16 +31,27 @@ services:
 
   worker:
     build: ./worker
+    environment:
+      BUILDMASTER: ${UX_BUILDMASTER}
+      BUILDMASTER_PORT: ${UX_BUILDMASTER_PORT}
+      WORKERNAME: ${UX_WORKERNAME}
+      WORKERPASS: ${UX_WORKERPASS}
+      WORKER_ENVIRONMENT_BLACKLIST: ${BASE_WORKER_ENVIRONMENT_BLACKLIST}
     links:
         - buildbot
     depends_on:
         - buildbot
-    env_file: .env
+
 
   worker_win:
     build: ./worker_wine
+    environment:
+      BUILDMASTER: ${WN_BUILDMASTER}
+      BUILDMASTER_PORT: ${WN_BUILDMASTER_PORT}
+      WORKERNAME: ${WN_WORKERNAME}
+      WORKERPASS: ${WN_WORKERPASS}
+      WORKER_ENVIRONMENT_BLACKLIST: ${BASE_WORKER_ENVIRONMENT_BLACKLIST}
     links:
         - buildbot
     depends_on:
         - buildbot
-    env_file: .env
