@@ -94,6 +94,12 @@ def check_pgsql_exists():
 
 
 def main():
+    # prompt for secrets
+    # prompt for settings
+    # write settings to .env
+    # prompt for extentions
+    # prompt for extentions settings
+    # append extentions to .env, compose.yml and master.cfg
     pass
 
 
