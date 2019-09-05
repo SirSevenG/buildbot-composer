@@ -18,7 +18,21 @@ def str_rewrite(find, replace, infile):
     os.remove(tmp)
 
 
-def apppend_yml(param_set, is_wine):
+def append_env(param_list):
+    # expected param_list = [string1=buildbot, string2=9989, string3=name_worker, string4=password]
+    low2 = param_list[2].lower()
+    up2 = param_list[2].upper()
+    name = low2 + "_worker"
+    params = ('\n# Buildbot_' + name + 'params\n')
+    params += (up2 + '_BUILDMASTER=' + param_list[0] + '\n')
+    params += (up2 + '_BUILDMASTER_PORT=' + param_list[1] + '\n')
+    params += (up2 + '_WORKERNAME=' + name + '\n')
+    params += (up2 + '_WORKERPASS=' + param_list[3] + '\n')
+    with open('.env', 'a') as env:
+        env.write(params)
+
+
+def append_yml(param_set, is_wine):
     # expected write_yml(string, any)
     up_set = param_set.upper()
     low_set = param_set.lower()
@@ -39,19 +53,6 @@ def apppend_yml(param_set, is_wine):
     params += (8 * ' ' + '- buildbot\n')
     with open('docker-compose.yml', 'a') as yml:
         yml.write(params)
-
-
-def append_env(param_list):
-    # expected param_list = [string1, string2, string3, string4, string5]
-    low4 = param_list[4].lower()
-    up4 = param_list[4].upper()
-    params = ('\n# Buildbot_' + low4 + '_worker params\n')
-    params += (up4 + '_BUILDMASTER=' + param_list[0] + '\n')
-    params += (up4 + '_BUILDMASTER_PORT=' + param_list[1] + '\n')
-    params += (up4 + '_WORKERNAME=' + param_list[2] + '\n')
-    params += (up4 + '_WORKERPASS=' + param_list[3] + '\n')
-    with open('.env', 'a') as env:
-        env.write(params)
 
 
 def append_master(param_set, is_win):
@@ -80,9 +81,14 @@ def write_env_settings(param_list):
     str_rewrite(to_find, to_write, '.env')
 
 
-def write_env_postgrespw():
+def randgen(lens):  # expected int(lens)
     alphabet = string.ascii_letters + string.digits
-    new_password = ''.join(random.choice(alphabet) for num in range(16))
+    password = ''.join(random.choice(alphabet) for num in range(lens))
+    return password
+
+
+def write_env_postgrespw():
+    new_password = randgen(16)
     print('New Postgres password:\n' + new_password + '\n')
     to_find = ["POSTGRES_PASSWORD="]
     to_write = [("POSTGRES_PASSWORD=" + new_password)]
@@ -93,14 +99,93 @@ def check_pgsql_exists():
     pass
 
 
+def write_secret(value, file):
+    secret = ("master/docker/secrets/" + file)
+    with open(secret, 'w') as f:
+        f.write(value)
+
+
 def main():
+    os.system('cp example.env .env')
+    os.system('cp example-compose.yml docker-compose.yml')
+    print("Welcome to buildbot-composer setup")
+    print("Preparing databse password")
+    write_env_postgrespw()
+    print("Done")
+
+    repo_url = input("Type url to github repository to test: ")
+    print(repo_url)
+    repo_branch = input("Repository branch to follow: ")
+    print(repo_branch)
+    repo = input("Repository url(without .git postfix): ")
+    print(repo)
+    domain = input("Domain or ip to point buildbot to: ")
+    print(domain)
+    print("Saving repo settings")
+    write_env_settings([repo_url, repo_branch, repo, domain])
+    print("Done")
+
+    wif = input("Input WIF to test with: ")
+    write_secret(wif, 'wif')
+    coin = input("Coin to test: ")
+    write_secret(coin, 'coin')
+    addr = input("Test coin public address: ")
+    write_secret(addr, 'addr')
+
+    while True:
+        change_admin = input("Do you want to change default webui login? (y/N): ")
+        if change_admin == 'yes' or change_admin == 'y' or change_admin == 'Y':
+            admin_name = input("Administrator login: ")
+            admin_pass = input("Administrator password: ")
+            print(admin_name, admin_pass)
+            write_secret(admin_name, 'admin_name')
+            write_secret(admin_pass, 'admin_pwd')
+            print("Done")
+            break
+        elif change_admin == 'N' or change_admin == 'n' or change_admin == 'No':
+            print("Defaults to admin/damin")
+            write_secret('admin', 'admin_name')
+            write_secret('admin', 'admin_pass')
+            print("Done")
+            break
+        else:
+            print("Unexpected input: ", change_admin)
+
+    while True:
+        add_workers = input("Set up additional workers? (y/N): ")
+        if add_workers == 'yes' or add_workers == 'y' or add_workers == 'Y':
+            worker_name = input("Name your new worker: ")
+            print("New worker name: ", worker_name)
+            pwd = randgen(8)
+            defaults = ['buildbot', '9989', worker_name, pwd]
+            append_env(defaults)
+            while True:
+                is_wine = input("Setup win or linux worker? (win/ux): ")
+                if is_wine == 'win':
+                    print("Windows worker set up")
+                    append_yml(worker_name, 1)
+                    append_master(worker_name, 1)
+                    print("Done")
+                    break
+                elif is_wine == 'ux':
+                    print("Linux worker set up:")
+                    append_yml(worker_name, 0)
+                    append_master(worker_name, 0)
+                    print("Done")
+                    break
+                else:
+                    print("Unexpected input: ", is_wine)
+        elif add_workers == 'no' or add_workers == 'n' or add_workers == 'N':
+            print("Setup finished, use 'docker-compose up' command to initiate build")
+            break
+        else:
+            print("Unexpected input: ", add_workers)
     # prompt for secrets
     # prompt for settings
     # write settings to .env
     # prompt for extentions
     # prompt for extentions settings
     # append extentions to .env, compose.yml and master.cfg
-    pass
 
 
 if __name__ == '__main__':
