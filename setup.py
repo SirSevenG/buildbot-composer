@@ -147,7 +147,7 @@ def main():
             admin_pass = input("Administrator password: ")
             print(admin_name, admin_pass)
             write_secret(admin_name, 'admin_name')
-            write_secret(admin_pass, 'admin_pwd')
+            write_secret(admin_pass, 'admin_pass')
             print("Done")
             break
         elif change_admin == 'N' or change_admin == 'n' or change_admin == 'No':
