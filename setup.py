@@ -66,7 +66,7 @@ def append_master(param_set, is_win):
     master = '\n'
     master += (low_set + "_workername = os.environ.get('" + up_set + "_WORKERNAME')\n")
     master += (low_set + "_workerpass = os.environ.get('" + up_set + "_WORKERPASS')\n")
-    master += ("c['workers'].append(worker.Worker(" + low_set + "_workername, " + low_set + "_workerpass)\n")
+    master += ("c['workers'].append(worker.Worker(" + low_set + "_workername, " + low_set + "_workerpass))\n")
     master += (base + ".append(" + low_set + "_workername)\n")
     with open('master/docker/master.cfg', 'a') as cfg:
         cfg.write(master)
