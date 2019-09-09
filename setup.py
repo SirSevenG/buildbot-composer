@@ -74,6 +74,7 @@ def append_master(param_set, is_win):
 
 def write_env_settings(param_list):
     # expected param_list length is 4 strings
+    param_list[3] = ('https://' + param_list[3] + '/')
     to_find = ["BM_BUILDBOT_REPO_URL=", "BM_BUILDBOT_REPO_BRANCH=", "BM_BUILDBOT_REPO=", "BM_BUILDBOT_WEB_URL="]
     to_write = []
     for i in range(len(to_find)):
