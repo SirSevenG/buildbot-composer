@@ -152,8 +152,8 @@ def main():
             break
         elif change_admin == 'N' or change_admin == 'n' or change_admin == 'No':
             print("Defaults to admin/damin")
-            write_secret('admin', 'admin_name')
-            write_secret('admin', 'admin_pass')
+            write_secret('admin\n', 'admin_name')
+            write_secret('admin\n', 'admin_pass')
             print("Done")
             break
         else:
