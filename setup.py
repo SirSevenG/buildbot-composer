@@ -131,6 +131,13 @@ def main():
     write_secret(coin, 'coin')
     addr = input("Test coin public address: ")
     write_secret(addr, 'addr')
+    print("Libwin download params: ")
+    url = input("url: ")
+    user = input("user: ")
+    pwd = input("pwd: ")
+    write_secret(url, 'url')
+    write_secret(user, 'user')
+    write_secret(pwd, 'pwd')
 
     while True:
         change_admin = input("Do you want to change default webui login? (y/N): ")
