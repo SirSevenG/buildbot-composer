@@ -54,6 +54,19 @@ RUN         apt-get update && \
             mkdir /buildbot && \
             useradd -ms /bin/bash buildbot
 
+# nspv tests basic reqs install
+RUN         pip3 install pycurl \
+                         python-bitcoinrpc \
+                         python-dateutil \
+                         PyYAML \
+                         requests \
+                         requests-unixsocket \
+                         slick-bitcoinrpc \
+                         ujson \
+                         urllib3 \
+                         pycrypto \
+                         pytest
+
 # Install wine and deps to run win app
 RUN         dpkg --add-architecture i386 && \
             apt-get update && \

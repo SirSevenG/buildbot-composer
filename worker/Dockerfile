@@ -54,6 +54,19 @@ RUN         apt-get update && \
             mkdir /buildbot && \
             useradd -ms /bin/bash buildbot
 
+# nspv tests basic reqs install
+RUN         pip3 install pycurl \
+                         python-bitcoinrpc \
+                         python-dateutil \
+                         PyYAML \
+                         requests \
+                         requests-unixsocket \
+                         slick-bitcoinrpc \
+                         ujson \
+                         urllib3 \
+                         pycrypto \
+                         pytest
+
 # Download buidbot-worker folder from official repo
 RUN         svn checkout https://github.com/buildbot/buildbot/trunk/worker /usr/src/buildbot-worker
 COPY        docker/buildbot.tac /buildbot/buildbot.tac
